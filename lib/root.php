@@ -14,13 +14,13 @@ if ( !defined( 'THEME_VERSION' ) )
 
 // Paths
 
-define( 'THEME_PATH',   TEMPLATEPATH . '/' );
-define( 'LIB_PATH',     THEME_PATH . 'lib/' );
+define( 'THEME_PATH',   STYLESHEETPATH . '/' );
+define( 'LIB_PATH',     THEME_PATH . '/lib/' );
 
 // Relevant Informations
 
 define( 'ROOT_URL',     get_home_url() . '/' );
-define( 'THEME_URL',    get_bloginfo( 'template_url' ) . '/' );
+define( 'THEME_URL',    get_stylesheet_directory_uri() . '/' );
 
 define( 'SITE_NAME',    get_bloginfo( 'name' ) );
 
