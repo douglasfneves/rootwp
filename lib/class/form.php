@@ -54,6 +54,7 @@ class Form
         }
 
         $this->html = $html;
+        $this->ids = array();
         $this->fields = array();
         $this->has_fields = false;
 
@@ -258,6 +259,8 @@ class Form
         $html = '';
         if ( count( $f[ 'opt' ] ) > 1 ) {
             $value = $f[ 'value' ];
+            $id = $f[ 'id' ];
+            $i = 1;
             foreach ( $f[ 'opt' ] as $v => $l ) { // value, label
                 $f[ 'value' ] = $v;
                 if ( $value == $v ) {
@@ -265,7 +268,8 @@ class Form
                 } else if ( isset( $f[ 'checked' ] ) ) {
                     unset( $f[ 'checked' ] );
                 }
-
+                
+                $f[ 'id' ] = $id . '-' . $i;
                 $input = sprintf(
                     '<input%s />%s',
                     self::print_attr( $f ),
@@ -276,6 +280,7 @@ class Form
                     $input
                 );
                 $html .= $opt;
+                $i++;
             }
         }
         return $html;
