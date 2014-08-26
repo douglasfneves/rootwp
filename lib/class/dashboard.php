@@ -45,8 +45,12 @@ abstract class Dashboard
 
                 $v = false;
                 $field_name = $field[ 'name' ];
-                if ( isset( $_POST[ $field_name ] ) )
-                    $v = ( isset( $field[ 'html' ] ) ) ? wp_kses( $_POST[ $field_name ] ) : sanitize_text_field( $_POST[ $field_name ] );
+                if ( isset( $_POST[ $field_name ] ) ) {
+                    if ( is_array( $_POST[ $field_name ] ) )
+                        $v = $_POST[ $field_name ];
+                    else
+                        $v = ( isset( $field[ 'html' ] ) ) ? wp_kses( $_POST[ $field_name ], true ) : sanitize_text_field( $_POST[ $field_name ] );
+                }
 
                 $fields[ $key ][ 'value' ] = $v;
 
