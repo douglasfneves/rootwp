@@ -418,4 +418,32 @@ if ( !function_exists( 'wp_list_posts' ) ) {
 
 }
 
+if ( !function_exists( 'get_string_numeric' ) ) {
+
+    /**
+     * 
+     * Display the language string for the number of items passed by param.
+     * Works like comments_number(), WordPress function.
+     *
+     * @param integer $number     Required. Amount of items.
+     * @param string  $zero       Optional. Text for no comments. Default false.
+     * @param string  $one        Optional. Text for one comment. Default false.
+     * @param string  $more       Optional. Text for more than one comment. Default false.
+     * 
+     **/
+    function get_string_numeric( $number, $zero=false, $one=false, $more=false )
+    {
+        $number = (int) $number;
+        if ( $number > 1 )
+            $output = str_replace( '%', number_format_i18n( $number ), ( false === $more ) ? __r( '% items' ) : $more );
+        elseif ( $number == 0 )
+            $output = ( false === $zero ) ? __r( 'No items' ) : $zero;
+        else // must be one
+            $output = ( false === $one ) ? __r( 'One item') : $one;
+
+        return $output;
+    }
+
+}
+
 ?>
