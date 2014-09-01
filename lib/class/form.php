@@ -194,7 +194,15 @@ class Form
     private function select( $f )
     {
         if ( is_array( $f[ 'opt' ] ) ) {
-            $value = ( !is_array( $f[ 'value' ] ) ) ? array( $f[ 'value' ] ) : $f[ 'value' ];
+            if ( isset( $f[ 'std' ] ) )
+                $value = ( !is_array( $f[ 'std' ] ) ) ? array( $f[ 'std' ] ) : $f[ 'std' ];
+            
+            if ( !is_array( $f[ 'value' ] ) ) {
+                if ( $f[ 'value' ] )
+                    $value = array( $f[ 'value' ] );
+            } else {
+                $value = $f[ 'value' ];
+            }
 
             $mult = false;
             if ( isset( $f[ 'mult' ] ) ) {
