@@ -9,6 +9,8 @@ class Theme
 {
 
     private static $path;
+    
+    private static $image_sizes;
 
     // {{{ Images
 
@@ -604,6 +606,95 @@ class Theme
         }
 
         return apply_filters( 'get_the_excerpt', $excerpt );
+    }
+    
+    private static function setup_image_sizes()
+    {
+        if ( !isset( self::$image_sizes ) ) {
+            self::$image_sizes = array();
+            
+            $types = get_post_types();
+            foreach ( $types as $type => $label ) {
+                unset( $label );
+                if ( !in_array( $type, array( 'attachment', 'revision', 'nav_menu_item' ) ) )
+                    self::$image_sizes[ $type ] = self::get_image_sizes_default();
+            }
+        }
+        
+        return self::$image_sizes;
+    }
+    
+    public static function add_image_size( $size_id, $width, $height, $cpt='post' )
+    {
+        $sizes = self::setup_image_sizes();
+        
+        $size = array(
+            'id'    => $size_id,
+            'width' => $width,
+            'height'=> $height
+        );
+        
+        if ( !is_array( $cpt ) )
+            $cpt = (array) $cpt;
+        
+        foreach ( $cpt as $t ) {
+            // Only necessary to avoid bad use errors
+            if ( !isset( $sizes[ $t ] ) )
+                $sizes[ $t ] = array();
+            
+            if ( !is_int( array_search( $size_id, $sizes[ $t ] ) ) )
+                array_push( $sizes[ $t ], $size_id );
+        }
+        
+        self::$image_sizes = $sizes;
+
+        add_image_size( $size_id, $width, $height, true );
+        
+        add_filter( 'intermediate_image_sizes', array( 'Theme', 'set_image_sizes' ) );
+    }
+    
+    public static function set_image_sizes( $sizes )
+    {
+        $sizes = self::setup_image_sizes();
+                
+        global $post;
+
+        $post_type = '';
+        if ( isset( $_POST[ 'post_id' ] ) ) {
+            $post_type = get_post_type( $_POST[ 'post_id' ] );
+        } else if ( !isset( $post ) && isset( $_POST[ 'id' ] ) ) {
+            $post = get_post( $_POST[ 'id' ] );
+        }
+        
+        if ( isset( $post->post_parent ) && ( $post->post_parent > 0 ) ) {
+            $post_type = get_post_type( $post->post_parent );
+        }
+
+        return ( isset( $sizes[ $post_type ] ) ) ? $sizes[ $post_type ] : self::get_image_sizes_default();
+    }
+    
+    private static function get_image_sizes_default()
+    {
+        return array( 'thumbnail', 'medium', 'large' );
+        
+    }
+    
+    public static function remove_image_size( $size_id, $cpt='post' )
+    {
+        $sizes = self::setup_image_sizes();
+        
+        if ( !is_array( $cpt ) )
+            $cpt = (array) $cpt;
+        
+        foreach ( $cpt as $t ) {
+            if ( isset( $sizes[ $t ] ) ) {
+                $i = array_search( $size_id, $sizes[ $t ] );
+                if ( is_int( $i ) )
+                    unset( $sizes[ $t ][ $i ] );
+            }
+        }
+        
+        self::$image_sizes = $sizes;
     }
 
 }
