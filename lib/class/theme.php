@@ -608,6 +608,14 @@ class Theme
         return apply_filters( 'get_the_excerpt', $excerpt );
     }
     
+    /**
+     * 
+     * Start setup to set image sizes by post type
+     * Post types from WordPress system not appears in this list
+     * 
+     * @return array $image_sizes List of sizes by post type
+     * 
+     */
     private static function setup_image_sizes()
     {
         if ( !isset( self::$image_sizes ) ) {
@@ -624,6 +632,16 @@ class Theme
         return self::$image_sizes;
     }
     
+    /**
+     * 
+     * Insert new image format to one or more post types
+     * 
+     * @param string $size_id Unique identifier to describe the new size
+     * @param integer $width Width dimension in px
+     * @param integer $height Height dimension in px
+     * @param string|array $cpt Single identifier of post type or various types
+     * 
+     */
     public static function add_image_size( $size_id, $width, $height, $cpt='post' )
     {
         $sizes = self::setup_image_sizes();
@@ -653,7 +671,16 @@ class Theme
         add_filter( 'intermediate_image_sizes', array( 'Theme', 'set_image_sizes' ) );
     }
     
-    public static function set_image_sizes( $sizes )
+    /**
+     * 
+     * On upload or delete images there is a hook to this method
+     * It serves to define which sizes will be executed
+     * 
+     * @global object $post Current post in edition
+     * @return array List containing all sizes to especific post type
+     * 
+     */
+    public static function set_image_sizes()
     {
         $sizes = self::setup_image_sizes();
                 
@@ -673,12 +700,27 @@ class Theme
         return ( isset( $sizes[ $post_type ] ) ) ? $sizes[ $post_type ] : self::get_image_sizes_default();
     }
     
+    /**
+     * 
+     * Retrieves the default sizes to images
+     * 
+     * @return array Image sizes to any content
+     * 
+     */
     private static function get_image_sizes_default()
     {
         return array( 'thumbnail', 'medium', 'large' );
         
     }
     
+    /**
+     * 
+     * Enables the specific size remotion to one or more post types
+     * 
+     * @param string $size_id Identifier of size
+     * @param string|array $cpt Single identifier of post type or various types
+     * 
+     */
     public static function remove_image_size( $size_id, $cpt='post' )
     {
         $sizes = self::setup_image_sizes();
