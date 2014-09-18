@@ -165,24 +165,6 @@ class Main
 
     /**
      *
-     * Add new image formats
-     *
-     * @param array $sizes List of formats
-     * array( name, width, height, crop )
-     *
-     */
-    public static function add_sizes( $sizes )
-    {
-        foreach( $sizes as $s ) {
-            if ( !isset( $s[ 'crop' ] ) )
-                $s[ 'crop' ] = true;
-
-            add_image_size( $s[ 'name' ], $s[ 'width' ], $s[ 'height' ], $s[ 'crop' ] );
-        }
-    }
-
-    /**
-     *
      * Adds custom avatars
      *
      * @param array $avatars Avatars list
