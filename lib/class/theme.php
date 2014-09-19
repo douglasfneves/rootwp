@@ -738,6 +738,25 @@ class Theme
         
         self::$image_sizes = $sizes;
     }
+    
+    /**
+     * 
+     * Configures an Ajax request
+     * 
+     * @param string $action Refers to the name of the AJAX action callback being fired
+     * @param string|array $callback Callback to run
+     * @param string $public Defines request scope as all, public or private
+     * 
+     */
+    public static function ajax( $action, $callback, $public='all' )
+    {
+        $all = ( $public == 'all' );
+        if ( $public == 'private' || $all )
+            add_action( 'wp_ajax_' . $action, $callback );
+                
+        if ( $public == 'public' || $all )
+            add_action( 'wp_ajax_nopriv_' . $action, $callback );
+    }
 
 }
 
