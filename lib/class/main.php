@@ -19,13 +19,6 @@ class Main
     {
         self::supported();
 
-        if ( !defined( 'ROOT_SUPPORTED' ) ) {
-            self::unsupported( 'wp_head' );
-            self::unsupported( 'admin_bar' );
-            self::unsupported( 'update_core' );
-            self::unsupported( 'update_plugins' );
-        }
-
         self::custom_login();
         self::custom_dashboard();
 
