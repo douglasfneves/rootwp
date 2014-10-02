@@ -165,7 +165,14 @@ if ( !function_exists( 'run_once' ) ) {
         $opt = get_option( $option_name );
         if ( !$opt || ( $opt !== $value ) ) {
             update_option( $option_name, $value );
-            if ( function_exists( $function ) )
+            
+            $call = false;
+            if ( is_string( $function ) && function_exists( $function ) )
+                $call = true;
+            else if ( is_array( $function ) && method_exists( $function[0], $function[1] ) )
+                $call = true;
+
+            if ( $call )
                 call_user_func( $function );
         }
     }
