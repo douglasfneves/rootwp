@@ -17,6 +17,7 @@ function __autoload( $class_name )
         'main',
         'metabox',
         'option',
+        'permalink',
         'term',
         'theme',
         'user'
