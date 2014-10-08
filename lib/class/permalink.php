@@ -1,12 +1,39 @@
 <?php
 
+/**
+ * 
+ * Manipulation of Permalinks and rewrite rules
+ * 
+ */
 class Permalink
 {
 
+    /**
+     *
+     * @var array Global request vars
+     * 
+     */
     private static $vars;
+    
+    /**
+     *
+     * @var array Custom rules 
+     * 
+     */
     private static $rules;
+    
+    /**
+     *
+     * @var array PHP Files related with the created rules 
+     * 
+     */
     private static $templates;
     
+    /**
+     * 
+     * Starter function
+     * 
+     */
     private static function setup()
     {
         if ( !is_array( self::$rules ) ) {
@@ -22,6 +49,16 @@ class Permalink
         }
     }
     
+    /**
+     * 
+     * Inserts a new instruction to WordPress Rules
+     * 
+     * @param string $slug Navigation URL to open new content
+     * @param string $query_var Global variable setted when accessed the informed url
+     * @param string $template Which template file is executed to this case, by default opens custom-slug.php
+     * @param mixed $value Custom value to global variable
+     * 
+     */
     public static function add_rule( $slug, $query_var, $template=false, $value='1' )
     {
         self::setup();
@@ -36,16 +73,40 @@ class Permalink
         self::$templates[ $query_var ] = $template;
     }
     
+    /**
+     * 
+     * Updates the rewrite rules of permalinks
+     * 
+     * @param array $rules WordPress Rules
+     * @return array Updated rules
+     * 
+     */
     public static function rewrite_rules( $rules )
     {
         return array_merge( self::$rules, $rules );
     }
     
+    /**
+     * 
+     * Embeds custom variables to globals
+     * 
+     * @param array $qv Global vars
+     * @return array Updated variables
+     * 
+     */
     public static function query_vars( $qv )
     {
         return array_merge( self::$vars, $qv );
     }
     
+    /**
+     * 
+     * Redirects site visitors to exhibition of the custom templates
+     * 
+     * @global object $wp_query Current WordPress Query
+     * @return boolean|null If current request is a feed request, nothing happens
+     * 
+     */
     public static function redirect()
     {
         if ( is_feed() ) 
@@ -70,11 +131,21 @@ class Permalink
         }
     }
     
+    /**
+     * 
+     * Executes the update only once according each 'theme version'
+     * 
+     */
     public static function update_rules()
     {
         run_once( 'root_rewrite_rules', array( 'Permalink', 'flush' ), THEME_VERSION );
     }
     
+    /**
+     * 
+     * Updates the rewrite rules and refreshes the requested page to fix which template should be opened
+     * 
+     */
     public static function flush()
     {
         flush_rewrite_rules();
